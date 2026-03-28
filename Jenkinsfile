@@ -1,7 +1,6 @@
-def PM2 = "C:\\Users\\dzein\\AppData\\Roaming\\npm\\pm2.cmd"
-def PM2_HOME_DIR = "C:\\pm2_home"
-
 def deployApp(String environment, String port) {
+    def PM2 = "C:\\Users\\dzein\\AppData\\Roaming\\npm\\pm2.cmd"
+    def PM2_HOME_DIR = "C:\\pm2_home"
     bat "set PM2_HOME=${PM2_HOME_DIR} && \"${PM2}\" delete greetings-app-${environment} & exit 0"
     bat """
         if exist C:\\app\\greetings-app-${environment} rmdir /s /q C:\\app\\greetings-app-${environment}
