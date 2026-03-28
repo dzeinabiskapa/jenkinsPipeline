@@ -6,10 +6,8 @@ def deployApp(String environment, String port) {
         xcopy /E /I /Y python-greetings C:\\app\\greetings-app-${environment}
     """
     dir("C:\\app\\greetings-app-${environment}") {
-        bat """
-            python -m venv venv
-            venv\\Scripts\\python -m pip install -r requirements.txt
-        """
+        bat 'py -m venv venv'
+        bat 'venv\\Scripts\\python -m pip install -r requirements.txt'
         bat "pm2 start app.py --name greetings-app-${environment} --interpreter C:\\app\\greetings-app-${environment}\\venv\\Scripts\\python.exe -- --port ${port}"
     }
 }
@@ -35,7 +33,7 @@ pipeline {
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'python-greetings']]
                 ])
                 dir('python-greetings') {
-                    bat 'python -m venv venv'
+                    bat 'py -m venv venv'
                     bat 'venv\\Scripts\\python -m pip install -r requirements.txt'
                 }
             }
