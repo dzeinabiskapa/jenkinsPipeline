@@ -1,5 +1,8 @@
+def PM2 = "C:\\Users\\dzein\\AppData\\Roaming\\npm\\pm2.cmd"
+def PM2_HOME_DIR = "C:\\pm2_home"
+
 def deployApp(String environment, String port) {
-    bat "set PM2_HOME=C:\\pm2_home && \"C:\\Users\\dzein\\AppData\\Roaming\\npm\\pm2.cmd\" delete greetings-app-${environment} & exit 0"
+    bat "set PM2_HOME=${PM2_HOME_DIR} && \"${PM2}\" delete greetings-app-${environment} & exit 0"
     bat """
         if exist C:\\app\\greetings-app-${environment} rmdir /s /q C:\\app\\greetings-app-${environment}
         mkdir C:\\app\\greetings-app-${environment}
@@ -8,7 +11,10 @@ def deployApp(String environment, String port) {
     dir("C:\\app\\greetings-app-${environment}") {
         bat 'py -m venv venv'
         bat 'venv\\Scripts\\python -m pip install -r requirements.txt'
-        bat "set PM2_HOME=C:\\pm2_home && \"C:\\Users\\dzein\\AppData\\Roaming\\npm\\pm2.cmd\" start app.py --name greetings-app-${environment} --interpreter C:\\app\\greetings-app-${environment}\\venv\\Scripts\\python.exe -- --port ${port}"
+        bat "set PM2_HOME=${PM2_HOME_DIR} && \"${PM2}\" start app.py --name greetings-app-${environment} --interpreter C:\\app\\greetings-app-${environment}\\venv\\Scripts\\python.exe --cwd C:\\app\\greetings-app-${environment} -- --port ${port}"
+        bat "ping 127.0.0.1 -n 4 > nul"
+        bat "set PM2_HOME=${PM2_HOME_DIR} && \"${PM2}\" list"
+        bat "set PM2_HOME=${PM2_HOME_DIR} && \"${PM2}\" logs greetings-app-${environment} --lines 20 --nostream"
     }
 }
 
